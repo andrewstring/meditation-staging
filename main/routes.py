@@ -194,6 +194,22 @@ def password():
 
     return render_template('password.html', user=session['username'], form=form)
 
+@app.route('/forgot-password', methods=['GET', 'POST'])
+def forgot_password():
+
+    form = PasswordForm()
+
+    if form.validate_on_submit():
+        form.password = request.form['password']
+        user = User.query.filter_by(username=session['username']).first()
+        user.password = form.password
+
+        #commit changes to user
+        db.session.commit()
+        return redirect(url_for('login_page'))
+
+    return render_template('password.html', form=form)
+
 @app.route('/runtime-breath')
 def runtime_breath():
 
