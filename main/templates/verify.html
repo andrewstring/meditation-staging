@@ -1,0 +1,10 @@
+{% extends "base_in.html" %}
+
+{% block content %}
+<div class="center-box text-center">
+    <p>VERIFY</p>
+    <form action="/verify/sent" method="post">
+        <button name="verifyBtn" type="submit">Send verification email</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "base_in.html" %}
+
+{% block content %}
+    <div class="d-flex justify-content-center text-center center-box">
+        <p id="message"></p>
+    </div>
+
+<script>
+    name = "{{ data.name }}"
+    num_cycles = "{{ data.num_cycles }}"
+    num_breathes = "{{ data.num_breathes }}"
+    cycle_time = "{{ data.cycle_time }}"
+</script>
+
+<script src="{{ url_for('static', filename='js/timer-breath.js') }}"></script>
+{% endblock %}

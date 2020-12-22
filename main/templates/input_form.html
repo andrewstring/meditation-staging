@@ -1,0 +1,40 @@
+{% extends "base_in.html" %}
+
+{% block content %}
+
+
+<div class="container">
+    <div class="d-flex justify-content-center form-user center-box">
+        <div class="p text-center">
+            <form action="{{ url_for('input_page') }}" class="text-center" method="post">
+                {{ form.hidden_tag() }}
+                <p>Name</p>
+                <input type="text" name = "name" value="{{ form.name }}" required>
+                <br>
+                <p>Number of Cycles</p>
+                <input type="text" name = "num_cycles" value="{{ form.num_cycles }}" required>
+                <br>
+                {% if input_array[0] %}
+                <p>Input a positive integer value between 1 and 10</p>
+                {% endif %}
+                <p>Number of Breathes</p>
+                <input type="text" name = "num_breathes" value="{{ form.num_breathes }}" required>
+                <br>
+                {% if input_array[1] %}
+                <p>Input a positive integer value between 1 and 10</p>
+                {% endif %}
+                <p>Cycle Time</p>
+                <input type="text" name = "cycle_time" value="{{ form.cycle_time }}" required>
+                <br>
+                {% if input_array[2] %}
+                <p>Input a positive integer value between 1 and 4</p>
+                {% endif %}
+                <input type="submit" value="Start Meditation">
+                {% if empty > 1 %}
+                <p>Please fill in all blanks</p>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

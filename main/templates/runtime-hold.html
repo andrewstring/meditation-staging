@@ -1,0 +1,26 @@
+{% extends "base_in.html" %}
+
+{% block content %}
+
+<div class="center-box">
+        <div class="d-flex justify-content-center">
+                <p>Hello {{ data.name }}</p>
+        </div>
+        <div class="d-flex justify-content-center">
+                <p>Minutes: </p><p id="minutes"></p>
+        </div>
+        <div class="d-flex justify-content-center">
+                <p>Seconds: </p><p id="seconds"></p>
+        </div>
+</div>
+
+
+<script>
+    name = "{{ data.name }}"
+    num_cycles = "{{ data.num_cycles }}"
+    num_breathes = "{{ data.num_breathes }}"
+    cycle_time = "{{ data.cycle_time }}"
+</script>
+
+<script src="{{ url_for('static', filename='js/timer-hold.js') }}"></script>
+{% endblock %}

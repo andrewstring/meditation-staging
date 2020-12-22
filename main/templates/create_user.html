@@ -1,0 +1,40 @@
+{% extends "base_out.html" %}
+
+{% block content %}
+
+
+<div class="container">
+    <div class="d-flex justify-content-center form-user center-box">
+        <div class="p text-center">
+            {% if not top_message %}
+            <p>Create User</p>
+            {% endif %}
+            <p>{{ top_message }}</p>
+            <form action="{{ url_for('create_user') }}" method="post">
+                {{ form.hidden_tag() }}
+                <p>Email</p>
+                <input type="text" name="email" required>
+                <br>
+                <p>Username</p>
+                <input type="text" name="username" required>
+                <br>
+                <p>Password</p>
+                <input type="text" name="password" required>
+                <br><br>
+                <input type="submit" value="Login">
+                {% if email %}
+                <p>Email already registered: please enter a new one</p>
+                {% endif %}
+                {% if username %}
+                <p>Username already registered: please enter a new one</p>
+                {% endif %}
+                {% if email_password %}
+                <p>Email and Username already registered: please enter new ones</p>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

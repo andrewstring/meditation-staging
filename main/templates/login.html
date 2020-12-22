@@ -1,0 +1,28 @@
+{% extends "base_out.html" %}
+
+{% block content %}
+
+
+<div class="container">
+    <div class="d-flex justify-content-center form-user center-box">
+        <div class="p text-center">
+            <p>Login Here</p>
+            <form action="{{ url_for('login_page') }}" class="text-center" method="post">
+                {{ form.hidden_tag() }}
+                <p>Username</p>
+                <input type="text" name="username" required>
+                <br>
+                <p>Password</p>
+                <input type="text" name="password" required>
+                <br><br>
+                <input type="submit" value="Login">
+                {% if wrong_pass %}
+                <p>Wrong Password</p>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
