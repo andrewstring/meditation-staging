@@ -7,7 +7,7 @@
     <div class="d-flex justify-content-center form-user center-box">
         <div class="p text-center">
             <p>Login Here</p>
-            <form action="{{ url_for('login_page') }}" class="text-center" method="post">
+            <form action="{{ url_for('login_page') }}" autocomplete="off" class="text-center" method="post">
                 {{ form.hidden_tag() }}
                 <p>Username</p>
                 <input type="text" name="username" required>

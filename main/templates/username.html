@@ -6,7 +6,7 @@
         <p>Username already exists: enter an original one</p>
     {% endif %}
     <p>Username: {{ user }}</p>
-    <form action="{{ url_for('username') }}" method="post" >
+    <form action="{{ url_for('username') }}" autocomplete="off" method="post" >
         {{ form.hidden_tag() }}
         <input type="text" name="username" required>
         <br>

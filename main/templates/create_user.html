@@ -10,7 +10,7 @@
             <p>Create User</p>
             {% endif %}
             <p>{{ top_message }}</p>
-            <form action="{{ url_for('create_user') }}" method="post">
+            <form action="{{ url_for('create_user') }}" autocomplete="off" method="post">
                 {{ form.hidden_tag() }}
                 <p>Email</p>
                 <input type="text" name="email" required>
