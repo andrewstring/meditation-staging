@@ -148,6 +148,7 @@ def verify_email():
 @app.route('/verify/sent/<token>')
 def confirm_email(token):
     email_confirmation = confirm_token(token)
+    print(email_confirmation)
     if bool(email_confirmation):
         user = User.query.filter_by(username=session['username']).first()
         user.verified = 1
