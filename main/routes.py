@@ -68,13 +68,13 @@ def create_user():
         return redirect(url_for('verify'))
     return render_template('create_user.html', form=form)
 
-@app.route('/input', methods=['GET', 'POST'])
-def input_page():
+@app.route('/input/<email>', methods=['GET', 'POST'])
+def input_page(email):
     global empty
     global cycle_count
     cycle_count = 0
 
-    user_info = db.session.query(User).filter_by(username=session.get('username')).first()
+    user_info = db.session.query(User).filter_by(email).first()
     if not user_info.verified:
         return redirect(url_for('verify'))
     form = InputForm()
@@ -152,7 +152,7 @@ def confirm_email(token):
         user = User.query.filter_by(email=email_confirmation).first()
         user.verified = 1
         db.session.commit()
-        return redirect(url_for('input_page'))
+        return redirect(url_for('input_page', email=email_confirmation))
     
     return render_template('verify_sent.html')
 
