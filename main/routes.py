@@ -152,7 +152,7 @@ def confirm_email(token):
         user = User.query.filter_by(email=email_confirmation).first()
         user.verified = 1
         db.session.commit()
-        return redirect(url_for('input_page'))
+        return redirect(url_for('login_page'))
     
     return render_template('verify_sent.html')
 
