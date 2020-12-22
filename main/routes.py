@@ -153,6 +153,7 @@ def confirm_email(token):
         user.verified = 1
         db.session.commit()
         return redirect(url_for('input_page'))
+    
     return render_template('verify_sent.html')
 
 @app.route('/change-username', methods=['GET', 'POST'])
