@@ -74,7 +74,7 @@ def input_page(email):
     global cycle_count
     cycle_count = 0
 
-    user_info = db.session.query(User).filter_by(email).first()
+    user_info = db.session.query(User).filter_by(email=email).first()
     if not user_info.verified:
         return redirect(url_for('verify'))
     form = InputForm()
