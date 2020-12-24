@@ -127,6 +127,16 @@ def input_page():
             if(element):
                 return redirect(url_for('input_page'))
 
+        user = User.query.filter_by(username=session['username']).first()
+        data = {
+           'name': user.name,
+           'num_cycles': int(user.num_cycles),
+           'num_breathes': int(user.num_breathes),
+           'cycle_time': int(user.cycle_time)
+        }
+
+        session['data'] = data;
+
         return redirect(url_for('runtime_breath'))
     empty += 1
 
@@ -213,35 +223,18 @@ def forgot_password():
 @app.route('/runtime-breath')
 def runtime_breath():
 
-    global cycle_count
+    if(session['data']['num_cycles'] > 0):
+        session['data']['num_cycles'] -=1;
+        session.modified = True;
+        return render_template('runtime-breath.html', data=session['data']);
 
-    user = User.query.filter_by(username=session['username']).first()
-    data = {
-           'name': user.name,
-           'num_cycles': user.num_cycles,
-           'num_breathes': user.num_breathes,
-           'cycle_time': user.cycle_time
-    }
-
-    if(cycle_count < int(data['num_cycles'])):
-        cycle_count += 1
-        return render_template('runtime-breath.html', data=data)
-
-    return redirect(url_for('runtime_end'))
+    return redirect(url_for('runtime_end'));
 
 
 @app.route('/runtime-hold')
 def runtime_hold():
 
-    user = User.query.filter_by(username=session['username']).first()
-    data = {
-        'name': user.name,
-        'num_cycles': user.num_cycles,
-        'num_breathes': user.num_breathes,
-        'cycle_time': user.cycle_time
-    }
-
-    return render_template('runtime-hold.html', data=data)
+    return render_template('runtime-hold.html', data=session['data']);
 
 @app.route('/runtime-end')
 def runtime_end():
