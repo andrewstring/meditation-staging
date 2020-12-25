@@ -1,7 +1,7 @@
 from main import app, db
-from main.form import InputForm, LoginForm, UserForm, UsernameForm, PasswordForm
+from main.form import InputForm, LoginForm, UserForm, UsernameForm, PasswordForm, PasswordResetForm
 from main.models import User
-from main.verify import generate_confirmation_token, generate_send_email, confirm_token, sendgrid_send
+from main.email import generate_confirmation_token, generate_send_email, confirm_token, sendgrid_send
 
 from flask import render_template, request, redirect, session, url_for
 
@@ -55,18 +55,18 @@ def create_user():
         password = request.form['password']
         if db.session.query(User).filter_by(email=email).first():
             if db.session.query(User).filter_by(username=username).first():
-                return render_template('create_user.html', email_password=True, form=form)
+                return render_template('create-user.html', email_password=True, form=form)
             else:
-                return render_template('create_user.html', email=True, form=form)
+                return render_template('create-user.html', email=True, form=form)
         if db.session.query(User).filter_by(username=username).first():
-            return render_template('create_user.html', username=True, form=form)
+            return render_template('create-user.html', username=True, form=form)
         user = User(email=email, username=username, password=password, verified=False, name="", num_cycles="", num_breathes="", cycle_time="")
         db.session.add(user)
         db.session.commit()
         session['username'] = username
         session['email'] = email
         return redirect(url_for('verify'))
-    return render_template('create_user.html', form=form)
+    return render_template('create-user.html', form=form)
 
 @app.route('/input', methods=['GET', 'POST'])
 def input_page():
@@ -140,7 +140,7 @@ def input_page():
         return redirect(url_for('runtime_breath'))
     empty += 1
 
-    return render_template('input_form.html', input_array=session['input_array'], form=form, empty=empty)
+    return render_template('input-form.html', input_array=session['input_array'], form=form, empty=empty)
 
 @app.route('/verify')
 def verify():
@@ -152,8 +152,8 @@ def verify_email():
     email = user.email
     token = generate_confirmation_token(email)
     url = request.base_url + '/' + token
-    sendgrid_send(email, render_template('verify_email.html', confirm_url=url))
-    return render_template('verify_sent.html')
+    sendgrid_send(email, render_template('verify-email.html', confirm_url=url), 'Meditation App Verification')
+    return render_template('verify-sent.html')
 
 @app.route('/verify/sent/<token>')
 def confirm_email(token):
@@ -164,7 +164,7 @@ def confirm_email(token):
         db.session.commit()
         return redirect(url_for('login_page'))
     
-    return render_template('verify_sent.html')
+    return render_template('verify-sent.html')
 
 @app.route('/change-username', methods=['GET', 'POST'])
 def username():
@@ -210,15 +210,52 @@ def forgot_password():
     form = PasswordForm()
 
     if form.validate_on_submit():
-        form.password = request.form['password']
-        user = User.query.filter_by(username=session['username']).first()
-        user.password = form.password
+        form.email = request.form['email'];
+        user = User.query.filter_by(email=form.email).first();
+        if user:
+            session['email'] = user.email;
+            print(session['email'])
+            return redirect(url_for('verify_forgot'));
+        else:
+            return render_template('password-forgot.html', form=form, wrong=True);
 
-        #commit changes to user
-        db.session.commit()
-        return redirect(url_for('login_page'))
+    return render_template('password-forgot.html', form=form)
 
-    return render_template('password.html', form=form)
+@app.route('/verify-forgot')
+def verify_forgot():
+    return render_template('verify-forgot.html')
+
+@app.route('/verify-forgot/sent', methods=["GET", "POST"])
+def verify_forgot_email():
+    user = User.query.filter_by(email=session['email']).first()
+    email = user.email
+    token = generate_confirmation_token(email)
+    url = request.base_url + '/' + token
+    print(url);
+    sendgrid_send(email, render_template('verify-forgot-email.html', confirm_url=url), 'Meditation App Reset Password');
+    return render_template('verify-forgot-sent.html')
+
+@app.route('/verify-forgot/sent/<token>')
+def confirm_forgot_email(token):
+    email_confirmation = confirm_token(token)
+    if bool(email_confirmation):
+        session['email'] = email_confirmation;
+        return redirect(url_for('verify_forgot_reset'));
+    return render_template('verify-sent.html')
+
+@app.route('/verify-forgot/reset', methods=["GET", "POST"])
+def verify_forgot_reset():
+    form = PasswordResetForm();
+
+    user = User.query.filter_by(email=session['email']).first();
+
+    if form.validate_on_submit():
+        form.password = request.form['password'];
+        user.password = form.password;
+        db.session.commit();
+        return redirect(url_for('login_page'));
+
+    return render_template('password-forgot-reset.html', form=form, user=user.username)
 
 @app.route('/runtime-breath')
 def runtime_breath():

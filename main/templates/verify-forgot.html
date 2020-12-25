@@ -1,0 +1,10 @@
+{% extends "base-out.html" %}
+
+{% block content %}
+<div class="center-box text-center">
+    <p>Reset Password</p>
+    <form action="/verify-forgot/sent" method="post">
+        <button name="verifyBtn" type="submit">Send password reset email</button>
+    </form>
+</div>
+{% endblock %}

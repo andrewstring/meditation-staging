@@ -56,19 +56,19 @@ def generate_send_email(email, template):
 
 
 #SendGrid config and run
-def create_message(to, html):
+def create_message(to, html, subject):
     message = Mail(
         from_email='abreezemail@gmail.com',
         to_emails=to,
-        subject='Meditation App Verification',
+        subject=subject,
         html_content=html
     )
 
     return message
 
-def sendgrid_send(to, html):
+def sendgrid_send(to, html, subject):
     try:
-        message = create_message(to, html)
+        message = create_message(to, html, subject)
         sg = SendGridAPIClient('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')
         response = sg.send(message)
         print(response.status_code)
