@@ -90,7 +90,6 @@ def input_page():
     cycle_count = 0
 
     user_info = db.session.query(User).filter_by(username=username).first()
-    print("GOT USER")
     if not user_info.verified:
         return redirect(url_for('verify'))
     form = InputForm()
@@ -230,7 +229,6 @@ def forgot_password():
         user = User.query.filter_by(email=form.email).first();
         if user:
             session['email'] = user.email;
-            print(session['email'])
             return redirect(url_for('verify_forgot'));
         else:
             return render_template('password-forgot.html', form=form, wrong=True);
@@ -246,8 +244,7 @@ def verify_forgot_email():
     user = User.query.filter_by(email=session['email']).first()
     email = user.email
     token = generate_confirmation_token(email)
-    url = request.base_url + '/' + token
-    print(url);
+    url = request.base_url + '/' + token;
     sendgrid_send(email, render_template('verify-forgot-email.html', confirm_url=url), 'Meditation App Reset Password');
     return render_template('verify-forgot-sent.html')
 
