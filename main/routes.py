@@ -37,13 +37,18 @@ def login_page():
             else:
                 session['username'] = user_login.username
                 if user_login.verified:
-                    return redirect(url_for('input_page'))
+                    return redirect(url_for('input_page'));
                 else:
                     return redirect(url_for('verify'))
         else:
             return redirect(url_for('create_user'))
 
     return render_template('login.html', form=form)
+
+@app.route("/logout")
+def logout():
+    session.pop("username");
+    return redirect(url_for("login_page"));
 
 @app.route("/create-user", methods=["GET", "POST"])
 def create_user():
@@ -68,13 +73,24 @@ def create_user():
         return redirect(url_for('verify'))
     return render_template('create-user.html', form=form)
 
-@app.route('/input', methods=['GET', 'POST'])
+
+@app.route('/input/', methods=['GET', 'POST'])
 def input_page():
+    try:
+        check_verify = User.query.filter_by(username=session['username']).first().verified;
+        if not check_verify:
+            return redirect(url_for('login_page'));
+    except:
+        return redirect(url_for('login_page'));
+
+    username = session['username'];
+
     global empty
     global cycle_count
     cycle_count = 0
 
-    user_info = db.session.query(User).filter_by(username=session['username']).first()
+    user_info = db.session.query(User).filter_by(username=username).first()
+    print("GOT USER")
     if not user_info.verified:
         return redirect(url_for('verify'))
     form = InputForm()
@@ -127,7 +143,7 @@ def input_page():
             if(element):
                 return redirect(url_for('input_page'))
 
-        user = User.query.filter_by(username=session['username']).first()
+        user = User.query.filter_by(username=username).first()
         data = {
            'name': user.name,
            'num_cycles': int(user.num_cycles),
